@@ -1,56 +1,102 @@
 package com.project.back_end.models;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.validation.constraints.*;
+
+/**
+ * Documento MongoDB que representa una receta médica emitida durante una cita.
+ * Incluye información del paciente, medicamento, dosis y notas del médico.
+ */
+@Document(collection = "prescriptions")
 public class Prescription {
 
-  // @Document annotation:
-//    - Marks the class as a MongoDB document (a collection in MongoDB).
-//    - The collection name is specified as "prescriptions" to map this class to the "prescriptions" collection in MongoDB.
+    // Identificador único de MongoDB (ObjectId en formato String)
+    @Id
+    private String id;
 
-// 1. 'id' field:
-//    - Type: private String
-//    - Description:
-//      - Represents the unique identifier for each prescription.
-//      - The @Id annotation marks it as the primary key in the MongoDB collection.
-//      - The id is of type String, which is commonly used for MongoDB's ObjectId as it stores IDs as strings in the database.
+    // Nombre completo del paciente (requerido, 3–100 caracteres)
+    @NotNull(message = "El nombre del paciente es obligatorio")
+    @Size(min = 3, max = 100, message = "El nombre debe tener entre 3 y 100 caracteres")
+    private String patientName;
 
-// 2. 'patientName' field:
-//    - Type: private String
-//    - Description:
-//      - Represents the name of the patient receiving the prescription.
-//      - The @NotNull annotation ensures that the patient name is required.
-//      - The @Size(min = 3, max = 100) annotation ensures that the name length is between 3 and 100 characters, ensuring a reasonable name length.
+    // ID de la cita asociada (requerido)
+    @NotNull(message = "La cita referenciada es obligatoria")
+    private Long appointmentId;
 
-// 3. 'appointmentId' field:
-//    - Type: private Long
-//    - Description:
-//      - Represents the ID of the associated appointment where the prescription was given.
-//      - The @NotNull annotation ensures that the appointment ID is required for the prescription.
+    // Nombre del medicamento (requerido, 3–100 caracteres)
+    @NotNull(message = "El nombre del medicamento es obligatorio")
+    @Size(min = 3, max = 100, message = "El nombre del medicamento debe tener entre 3 y 100 caracteres")
+    private String medication;
 
-// 4. 'medication' field:
-//    - Type: private String
-//    - Description:
-//      - Represents the medication prescribed to the patient.
-//      - The @NotNull annotation ensures that the medication name is required.
-//      - The @Size(min = 3, max = 100) annotation ensures that the medication name is between 3 and 100 characters, which ensures meaningful medication names.
+    // Dosificación del medicamento (requerido, 3–20 caracteres)
+    @NotNull(message = "La dosificación es obligatoria")
+    @Size(min = 3, max = 20, message = "La dosificación debe tener entre 3 y 20 caracteres")
+    private String dosage;
 
-// 5. 'dosage' field:
-//    - Type: private String
-//    - Description:
-//      - Represents the dosage information for the prescribed medication.
-//      - The @NotNull annotation ensures that the dosage information is provided.
+    // Notas opcionales del médico (máx. 200 caracteres)
+    @Size(max = 200, message = "Las notas del médico no deben superar los 200 caracteres")
+    private String doctorNotes;
 
-// 6. 'doctorNotes' field:
-//    - Type: private String
-//    - Description:
-//      - Represents any additional notes or instructions from the doctor regarding the prescription.
-//      - The @Size(max = 200) annotation ensures that the doctor's notes do not exceed 200 characters, providing a reasonable limit for additional notes.
+    // Constructor vacío requerido por Spring Data
+    public Prescription() {}
 
-// 7. Constructors:
-//    - The class includes a no-argument constructor (default constructor) and a parameterized constructor that initializes the fields: patientName, medication, dosage, doctorNotes, and appointmentId.
+    // Constructor con los campos más importantes
+    public Prescription(String patientName, Long appointmentId, String medication, String dosage, String doctorNotes) {
+        this.patientName = patientName;
+        this.appointmentId = appointmentId;
+        this.medication = medication;
+        this.dosage = dosage;
+        this.doctorNotes = doctorNotes;
+    }
 
-// 8. Getters and Setters:
-//    - Standard getter and setter methods are provided for all fields: id, patientName, medication, dosage, doctorNotes, and appointmentId.
-//    - These methods allow access and modification of the fields of the Prescription class.
+    // Getters y setters
 
+    public String getId() {
+        return id;
+    }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getPatientName() {
+        return patientName;
+    }
+
+    public void setPatientName(String patientName) {
+        this.patientName = patientName;
+    }
+
+    public Long getAppointmentId() {
+        return appointmentId;
+    }
+
+    public void setAppointmentId(Long appointmentId) {
+        this.appointmentId = appointmentId;
+    }
+
+    public String getMedication() {
+        return medication;
+    }
+
+    public void setMedication(String medication) {
+        this.medication = medication;
+    }
+
+    public String getDosage() {
+        return dosage;
+    }
+
+    public void setDosage(String dosage) {
+        this.dosage = dosage;
+    }
+
+    public String getDoctorNotes() {
+        return doctorNotes;
+    }
+
+    public void setDoctorNotes(String doctorNotes) {
+        this.doctorNotes = doctorNotes;
+    }
 }
