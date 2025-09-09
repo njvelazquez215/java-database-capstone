@@ -1,79 +1,108 @@
-# Diseño de Esquema de Base de Datos - SmartCare Clinic System
+# Diseño del Esquema de Base de Datos - SmartCare Clinic System
 
-## 🗃️ Diseño de Base de Datos Relacional (MySQL)
+Este documento detalla el diseño de la base de datos para el Sistema Inteligente de Gestión de Clínicas. Se divide en dos partes:
 
-A continuación se detallan las tablas principales del sistema, definidas para garantizar integridad referencial, normalización y escalabilidad.
-
-### 🔸 Tabla: `administradores`
-
-| Columna       | Tipo de Dato     | Restricciones                 |
-|---------------|------------------|-------------------------------|
-| id            | INT              | PRIMARY KEY, AUTO_INCREMENT  |
-| nombre        | VARCHAR(100)     | NOT NULL                     |
-| email         | VARCHAR(100)     | NOT NULL, UNIQUE             |
-| password_hash | VARCHAR(255)     | NOT NULL                     |
-
-<!-- Se almacena un hash de contraseña por seguridad. -->
+1. **Diseño relacional con MySQL** para los datos estructurados y altamente interrelacionados.
+2. **Diseño documental con MongoDB** para almacenar datos flexibles como recetas.
 
 ---
 
-### 🔸 Tabla: `doctores`
+## 🗃️ MySQL Database Design
 
-| Columna        | Tipo de Dato     | Restricciones                        |
-|----------------|------------------|--------------------------------------|
-| id             | INT              | PRIMARY KEY, AUTO_INCREMENT          |
-| nombre         | VARCHAR(100)     | NOT NULL                             |
-| email          | VARCHAR(100)     | NOT NULL, UNIQUE                     |
-| especialidad   | VARCHAR(100)     | NOT NULL                             |
-| telefono       | VARCHAR(20)      |                                      |
-| disponible     | BOOLEAN          | DEFAULT TRUE                         |
-| id_admin       | INT              | FOREIGN KEY → administradores(id)    |
-
-<!-- Cada doctor puede ser gestionado por un administrador. -->
+Se identificaron cuatro entidades clave: pacientes, doctores, citas y administradores. Estas tablas permiten asegurar la integridad referencial y facilitar la trazabilidad de la información médica.
 
 ---
 
-### 🔸 Tabla: `pacientes`
+### 🔹 Tabla: `administradores`
 
-| Columna        | Tipo de Dato     | Restricciones                     |
-|----------------|------------------|-----------------------------------|
-| id             | INT              | PRIMARY KEY, AUTO_INCREMENT       |
-| nombre         | VARCHAR(100)     | NOT NULL                          |
-| email          | VARCHAR(100)     | NOT NULL, UNIQUE                  |
-| fecha_nacimiento | DATE           |                                   |
-| telefono       | VARCHAR(20)      |                                   |
-| password_hash  | VARCHAR(255)     | NOT NULL                          |
+| Columna        | Tipo de Dato     | Restricciones                    |
+|----------------|------------------|----------------------------------|
+| id             | INT              | PRIMARY KEY, AUTO_INCREMENT      |
+| nombre         | VARCHAR(100)     | NOT NULL                         |
+| email          | VARCHAR(100)     | NOT NULL, UNIQUE                 |
+| password_hash  | VARCHAR(255)     | NOT NULL                         |
 
-<!-- Los pacientes también tienen autenticación básica. -->
-
----
-
-### 🔸 Tabla: `citas`
-
-| Columna      | Tipo de Dato     | Restricciones                             |
-|--------------|------------------|-------------------------------------------|
-| id           | INT              | PRIMARY KEY, AUTO_INCREMENT               |
-| fecha_hora   | DATETIME         | NOT NULL                                  |
-| motivo       | TEXT             |                                           |
-| id_paciente  | INT              | FOREIGN KEY → pacientes(id)               |
-| id_doctor    | INT              | FOREIGN KEY → doctores(id)                |
-| estado       | ENUM             | ('Programada', 'Completada', 'Cancelada') DEFAULT 'Programada' |
-
-<!-- Una cita conecta a un paciente con un doctor y puede cambiar de estado. -->
+<!-- 
+Justificación:
+Los administradores gestionan la plataforma y deben autenticarse de forma segura.
+ -->
 
 ---
 
-## 🍃 Diseño de Colección MongoDB
+### 🔹 Tabla: `doctores`
 
-MongoDB se utiliza para almacenar **recetas médicas**, ya que permiten estructuras más flexibles, con campos anidados y arreglos que pueden variar por paciente o tratamiento.
+| Columna         | Tipo de Dato     | Restricciones                            |
+|-----------------|------------------|------------------------------------------|
+| id              | INT              | PRIMARY KEY, AUTO_INCREMENT              |
+| nombre          | VARCHAR(100)     | NOT NULL                                 |
+| email           | VARCHAR(100)     | NOT NULL, UNIQUE                         |
+| especialidad    | VARCHAR(100)     | NOT NULL                                 |
+| telefono        | VARCHAR(20)      |                                          |
+| disponible      | BOOLEAN          | DEFAULT TRUE                             |
+| id_admin        | INT              | FOREIGN KEY → administradores(id)        |
 
-### 🔹 Colección: `recetas`
+<!-- 
+Cada doctor puede estar vinculado a un administrador para gestión de acceso o auditoría.
+ -->
+
+---
+
+### 🔹 Tabla: `pacientes`
+
+| Columna           | Tipo de Dato     | Restricciones                     |
+|-------------------|------------------|-----------------------------------|
+| id                | INT              | PRIMARY KEY, AUTO_INCREMENT       |
+| nombre            | VARCHAR(100)     | NOT NULL                          |
+| email             | VARCHAR(100)     | NOT NULL, UNIQUE                  |
+| fecha_nacimiento  | DATE             |                                   |
+| telefono          | VARCHAR(20)      |                                   |
+| password_hash     | VARCHAR(255)     | NOT NULL                          |
+
+<!-- 
+Los pacientes también deben autenticarse y gestionar sus citas.
+ -->
+
+---
+
+### 🔹 Tabla: `citas`
+
+| Columna        | Tipo de Dato     | Restricciones                                      |
+|----------------|------------------|----------------------------------------------------|
+| id             | INT              | PRIMARY KEY, AUTO_INCREMENT                        |
+| id_paciente    | INT              | FOREIGN KEY → pacientes(id), NOT NULL              |
+| id_doctor      | INT              | FOREIGN KEY → doctores(id), NOT NULL               |
+| fecha_hora     | DATETIME         | NOT NULL                                           |
+| motivo         | TEXT             |                                                   |
+| estado         | ENUM             | ('Programada', 'Completada', 'Cancelada'), DEFAULT 'Programada' |
+
+<!-- 
+Las citas vinculan pacientes y doctores. Podrían eliminarse en cascada si el paciente es eliminado.
+ -->
+
+---
+
+### 💡 Preguntas clave consideradas:
+
+- ¿Qué pasa si se elimina un paciente? → Las citas podrían eliminarse en cascada o marcarse como archivadas.
+- ¿Se permite que un doctor tenga múltiples citas al mismo tiempo? → No. Se validará en la lógica de negocio para evitar superposiciones.
+- ¿Debe cada doctor tener horarios de disponibilidad? → Sí, se planea extender este diseño con una tabla adicional (`horarios`) más adelante.
+
+---
+
+## 🍃 MongoDB Collection Design
+
+MongoDB se usará para almacenar **recetas médicas**, ya que requieren estructura flexible, campos anidados, y pueden variar en cada consulta médica.
+
+---
+
+### 🔸 Colección: `recetas`
 
 ```json
 {
-  "_id": "65fc12ab98c3c45f8123aa91",
+  "_id": "ObjectId('6512ab34fa87e901a6543210')",
   "id_paciente": 3,
   "id_doctor": 2,
+  "id_cita": 12,
   "fecha_emision": "2025-09-08T10:30:00Z",
   "medicamentos": [
     {
@@ -89,14 +118,20 @@ MongoDB se utiliza para almacenar **recetas médicas**, ya que permiten estructu
       "duracion_dias": 7
     }
   ],
-  "indicaciones": "Tomar los medicamentos con comida. Reposo por 48hs.",
-  "firmado_digitalmente": true
+  "notas": "Tomar los medicamentos con comida. Evitar el alcohol.",
+  "firmado_digitalmente": true,
+  "metadatos": {
+    "creadoEn": "2025-09-08T10:30:00Z",
+    "estado": "activa",
+    "ultimaActualizacion": "2025-09-08T11:45:00Z"
+  },
+  "etiquetas": ["antibiótico", "analgésico"]
 }
 ```
+- MongoDB permite guardar múltiples medicamentos por receta en un solo documento.
+- Se incluye un arreglo para medicamentos, un objeto anidado de metadatos y etiquetas para búsqueda.
+- La receta se asocia con una cita (`id_cita`), pero también podría funcionar independientemente si fuera necesario.
 
-Este diseño mixto permite:
-- Aprovechar la estructura relacional de MySQL para datos estandarizados y relaciones firmes.
-- Usar MongoDB para documentos médicos que pueden tener variaciones y crecer con el tiempo.
-- Facilitar la escalabilidad y flexibilidad del sistema a medida que se añaden nuevas funcionalidades.
-- Optimizar el rendimiento mediante consultas específicas a cada tipo de base de datos según la naturaleza de los datos.
-- Permitir futuras integraciones con otros sistemas de salud o aplicaciones móviles a través de APIs RESTful.
+### ✅ Conclusión
+- MySQL se utiliza para información estructurada, como relaciones entre pacientes, doctores y citas.
+- MongoDB se reserva para documentos flexibles que pueden cambiar con el tiempo, como recetas.
