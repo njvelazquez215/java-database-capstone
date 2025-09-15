@@ -1,14 +1,73 @@
-/* This is the style sheet for the patientDashboard.html */
-  .card-actions {
+/* Estilos para patientDashboard.html */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+    background: linear-gradient(to bottom right, #f0f0f0, #dfefff);
+}
+
+.searchBar {
+    padding: 10px;
+    width: 90%;
+    margin: 0 auto 20px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    display: block;
+    font-size: 1rem;
+}
+
+.filter-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.filter-select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+#content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Acciones de la tarjeta del doctor */
+.card-actions {
     background-color: #244557;
     padding: 10px;
     text-align: center;
-  }
+}
 
-  .card-actions:hover{
+.card-actions:hover {
     background-color: #1c3745;
-  }
-  .ripple-overlay {
+}
+
+/* Ripple visual al confirmar reserva */
+.ripple-overlay {
     position: fixed;
     width: 20px;
     height: 20px;
@@ -17,64 +76,85 @@
     z-index: 9999;
     transform: translate(-50%, -50%) scale(0);
     transition: transform 1s ease-out, opacity 1s ease;
-  }
-  
-  .ripple-overlay.active {
+}
+
+.ripple-overlay.active {
     transform: translate(-50%, -50%) scale(150);
     opacity: 1;
-  }
-  
-  .modalApp {
-    position: fixed;
-  bottom: -100%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 50%;
-  background: #fff;
-  padding: 20px;
-  z-index: 10000;
-  transition: bottom 1.5s ease-in;
-  box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.3);
-  border-radius: 10px 10px 0 0;
-  text-align: center;
-  }
-  
-  .modalApp.active {
-    bottom: 0;
-  }
-  
-  .modalApp h2 {
-    margin-top: 20px;
-  }
-  
-  .modalApp input {
-    display: block;
-    margin: 10px auto;
-    padding: 10px;
-    width: 90%;
-    margin-bottom: 40px;
-  }
+}
 
-  .modalApp select {
+/* Modal emergente inferior para reservas */
+.modalApp {
+    position: fixed;
+    bottom: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50%;
+    background: #fff;
+    padding: 20px;
+    z-index: 10000;
+    transition: bottom 1.5s ease-in;
+    box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 10px 10px 0 0;
+    text-align: center;
+}
+
+.modalApp.active {
+    bottom: 0;
+}
+
+.modalApp h2 {
+    margin-top: 20px;
+}
+
+.modalApp input,
+.modalApp select {
     display: block;
-    margin: 10px auto;
+    margin: 10px auto 40px;
     padding: 10px;
     width: 90%;
-    margin-bottom: 40px;
-  }
-  
-  .confirm-booking {
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+/* Botón confirmar reserva */
+.confirm-booking {
     padding: 10px 20px;
     background: #1c3745;
     color: #fff;
     border: none;
+    border-radius: 8px;
     cursor: pointer;
-    
-  
-    
-  }
-  .confirm-booking:hover {
+    font-size: 1rem;
+}
+
+.confirm-booking:hover {
     filter: brightness(1.2);
     background-color: #1c3745;
-  }
-  
+}
+
+/* Texto cuando no hay doctores */
+.noPatientRecord {
+    font-style: italic;
+    color: #999;
+    text-align: center;
+    margin-top: 30px;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .modalApp {
+        width: 90%;
+    }
+
+    .searchBar,
+    .filter-select {
+        width: 95%;
+    }
+
+    .filter-wrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+}

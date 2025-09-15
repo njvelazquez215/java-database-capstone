@@ -1,14 +1,18 @@
 <!-- patientDashboard.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
+    <title>Panel del Paciente</title>
     <link rel="icon" type="image/svg+xml" href="../assets/images/logo/logo.png" />
-    <title>PatientDashboard</title>
-    <link rel="stylesheet" href="../assets/css/adminDashboard.css">
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/patientDashboard.css">
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="../assets/css/adminDashboard.css" />
+    <link rel="stylesheet" href="../assets/css/style.css" />
+    <link rel="stylesheet" href="../assets/css/patientDashboard.css" />
+
+    <!-- Scripts utilitarios y componentes -->
     <script src="../js/render.js" defer></script>
     <script src="../js/util.js" defer></script>
     <script src="../js/components/header.js" defer></script>
@@ -17,47 +21,62 @@
 </head>
 
 <body onload="renderContent()">
-    <div class="container">
-        <div class="wrapper">
-            <div id="header"></div>
-            <main class="main-content">
-                <input type="text" id="searchBar" class="searchBar" placeholder="Search Bar for custom output" />
-                <div class="filter-wrapper">
-                    <select class="filter-select" id="filterTime">
-                        <option value="">Sort by Time</option>
-                        <option value="AM">AM</option>
-                        <option value="PM">PM</option>
-                    </select>
-                    <select class="filter-select" id="filterSpecialty">
-                        <option value="">Filter by Specialty</option>
-                        <option value="Cardiologist">Cardiologist</option>
-                        <option value="Dermatologist">Dermatologist</option>
-                        <option value="Neurologist">Neurologist</option>
-                        <option value="Pediatrician">Pediatrician</option>
-                        <option value="Orthopedic">Orthopedic</option>
-                        <option value="Gynecologist">Gynecologist</option>
-                        <option value="Psychiatrist">Psychiatrist</option>
-                        <option value="Dentist">Dentist</option>
-                        <option value="Ophthalmologist">Ophthalmologist</option>
-                        <option value="Ent">ENT Specialist</option>
-                        <option value="Urologist">Urologist</option>
-                        <option value="Oncologist">Oncologist</option>
-                        <option value="Gastroenterologist">Gastroenterologist</option>
-                        <option value="General">General Physician</option>
-                    </select>
-                </div>
-                <div id="content"></div>
-            </main>
-            <div id="footer"></div>
-        </div>
+<div class="container">
+    <div class="wrapper">
+        <!-- Header dinámico -->
+        <div id="header"></div>
+
+        <!-- Contenido principal -->
+        <main class="main-content">
+            <!-- Barra de búsqueda -->
+            <input type="text" id="searchBar" class="searchBar" placeholder="Buscar doctores por nombre" />
+
+            <!-- Filtros -->
+            <div class="filter-wrapper">
+                <select class="filter-select" id="filterTime">
+                    <option value="">Filtrar por horario</option>
+                    <option value="AM">AM</option>
+                    <option value="PM">PM</option>
+                </select>
+
+                <select class="filter-select" id="filterSpecialty">
+                    <option value="">Filtrar por especialidad</option>
+                    <option value="Cardiología">Cardiología</option>
+                    <option value="Dermatología">Dermatología</option>
+                    <option value="Neurología">Neurología</option>
+                    <option value="Pediatría">Pediatría</option>
+                    <option value="Traumatología">Traumatología</option>
+                    <option value="Ginecología">Ginecología</option>
+                    <option value="Psiquiatría">Psiquiatría</option>
+                    <option value="Odontología">Odontología</option>
+                    <option value="Oftalmología">Oftalmología</option>
+                    <option value="Otorrinolaringología">Otorrinolaringología</option>
+                    <option value="Urología">Urología</option>
+                    <option value="Oncología">Oncología</option>
+                    <option value="Gastroenterología">Gastroenterología</option>
+                    <option value="Clínica Médica">Clínica Médica</option>
+                </select>
+            </div>
+
+            <!-- Contenedor para mostrar doctores -->
+            <div id="content"></div>
+        </main>
+
+        <!-- Footer dinámico -->
+        <div id="footer"></div>
     </div>
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="closeModal">&times;</span>
-            <div id="modal-body"></div>
-        </div>
+</div>
+
+<!-- Modal para reservas -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeModal">&times;</span>
+        <div id="modal-body"></div>
     </div>
-    <script type="module" src="../js/patientDashboard.js" defer></script>
+</div>
+
+<!-- Lógica del panel del paciente -->
+<script type="module" src="../js/patientDashboard.js" defer></script>
 </body>
 
 </html>
